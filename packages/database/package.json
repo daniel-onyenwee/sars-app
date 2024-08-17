@@ -1,0 +1,19 @@
+{
+  "name": "@sars/database",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sars app database",
+  "type": "module",
+  "main": "lib/index.js",
+  "scripts": {
+    "ts:build": "tsc --build",
+    "ts:watch": "tsc --watch"
+  },
+  "keywords": [],
+  "author": "daniel-onyenwee",
+  "license": "ISC",
+  "dependencies": {
+    "postgres-mini": "^0.1.3",
+    "typescript": "^5.5.4"
+  }
+}

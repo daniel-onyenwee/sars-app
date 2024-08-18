@@ -1,0 +1,206 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model AttendanceRegisterLecturer {
+  id                   String             @id @default(uuid())
+  attendanceRegisterId String             @map("attendance_register_id")
+  attendanceRegister   AttendanceRegister @relation(fields: [attendanceRegisterId], references: [id], onDelete: Cascade)
+  lecturerId           String             @map("lecturer_id")
+  lecturer             Lecturer           @relation(fields: [lecturerId], references: [id], onDelete: Cascade)
+  createdAt            DateTime           @default(now()) @map("created_at")
+  updatedAt            DateTime           @updatedAt @map("updated_at")
+  metadata             Json               @default("{}")
+  classAttendances     ClassAttendance[]
+
+  @@unique([attendanceRegisterId, lecturerId])
+  @@map("attendance_register_lecturers")
+}
+
+model AttendanceRegisterStudent {
+  id                   String             @id @default(uuid())
+  attendanceRegisterId String             @map("attendance_register_id")
+  attendanceRegister   AttendanceRegister @relation(fields: [attendanceRegisterId], references: [id], onDelete: Cascade)
+  studentId            String             @map("student_id")
+  student              Student            @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  createdAt            DateTime           @default(now()) @map("created_at")
+  updatedAt            DateTime           @updatedAt @map("updated_at")
+  metadata             Json               @default("{}")
+  classAttendees       ClassAttendee[]
+
+  @@unique([attendanceRegisterId, studentId])
+  @@map("attendance_register_students")
+}
+
+model AttendanceRegister {
+  id                          String                       @id @default(uuid())
+  courseId                    String                       @map("course_id")
+  session                     String
+  decision                    Json                         @default("[]")
+  course                      Course                       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  createdAt                   DateTime                     @default(now()) @map("created_at")
+  updatedAt                   DateTime                     @updatedAt @map("updated_at")
+  metadata                    Json                         @default("{}")
+  attendanceRegisterLecturers AttendanceRegisterLecturer[]
+  attendanceRegisterStudents  AttendanceRegisterStudent[]
+  classAttendances            ClassAttendance[]
+
+  @@unique([courseId, session])
+  @@map("attendance_registers")
+}
+
+model ClassAttendance {
+  id                           String                     @id @default(uuid())
+  attendanceRegisterId         String                     @map("attendance_register_id")
+  attendanceRegister           AttendanceRegister         @relation(fields: [attendanceRegisterId], references: [id], onDelete: Cascade)
+  date                         DateTime                   @db.Date
+  startTime                    DateTime                   @map("start_time") @db.Time(6)
+  endTime                      DateTime                   @map("end_time") @db.Time(6)
+  attendanceRegisterLecturerId String                     @map("attendance_register_lecturer_id")
+  attendanceRegisterLecturer   AttendanceRegisterLecturer @relation(fields: [attendanceRegisterLecturerId], references: [id], onDelete: Cascade)
+  createdAt                    DateTime                   @default(now()) @map("created_at")
+  updatedAt                    DateTime                   @updatedAt @map("updated_at")
+  metadata                     Json                       @default("{}")
+  classAttendees               ClassAttendee[]
+
+  @@map("class_attendances")
+}
+
+model ClassAttendee {
+  id                          String                    @id @default(uuid())
+  classAttendanceId           String                    @map("class_attendance_id")
+  classAttendance             ClassAttendance           @relation(fields: [classAttendanceId], references: [id], onDelete: Cascade)
+  attendanceRegisterStudentId String                    @map("attendance_register_student_id")
+  attendanceRegisterStudent   AttendanceRegisterStudent @relation(fields: [attendanceRegisterStudentId], references: [id], onDelete: Cascade)
+  createdAt                   DateTime                  @default(now()) @map("created_at")
+  updatedAt                   DateTime                  @updatedAt @map("updated_at")
+  metadata                    Json                      @default("{}")
+  courseClashAttendance       CourseClashAttendance?
+
+  @@unique([classAttendanceId, attendanceRegisterStudentId])
+  @@map("class_attendees")
+}
+
+model CourseClashAttendance {
+  id              String        @id @default(uuid())
+  courseId        String        @map("course_id")
+  course          Course        @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  studentId       String        @map("student_id")
+  student         Student       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  classAttendeeId String        @unique @map("class_attendee_id")
+  classAttendee   ClassAttendee @relation(fields: [classAttendeeId], references: [id], onDelete: Cascade)
+  session         String
+  date            DateTime      @db.Date
+  startTime       DateTime      @map("start_time") @db.Time(6)
+  endTime         DateTime      @map("end_time") @db.Time(6)
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+  metadata        Json          @default("{}")
+
+  @@map("course_clash_attendances")
+}
+
+model Course {
+  id                     String                  @id @default(uuid())
+  title                  String
+  code                   String                  @unique
+  semester               Semester
+  level                  Level
+  department             Department              @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  departmentId           String                  @map("department_id")
+  createdAt              DateTime                @default(now()) @map("created_at")
+  updatedAt              DateTime                @updatedAt @map("updated_at")
+  metadata               Json                    @default("{}")
+  attendanceRegisters    AttendanceRegister[]
+  courseClashAttendances CourseClashAttendance[]
+
+  @@map("courses")
+}
+
+model Department {
+  id        String     @id @default(uuid())
+  name      String
+  faculty   Faculty    @relation(fields: [facultyId], references: [id], onDelete: Cascade)
+  facultyId String     @map("faculty_id")
+  levels    Level[]    @default([L_100])
+  courses   Course[]
+  lecturers Lecturer[]
+  students  Student[]
+  metadata  Json       @default("{}")
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+
+  @@map("departments")
+}
+
+model Faculty {
+  id          String       @id @default(uuid())
+  name        String
+  departments Department[]
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+  metadata    Json         @default("{}")
+
+  @@map("faculties")
+}
+
+model Lecturer {
+  id                          String                       @id @default(uuid())
+  surname                     String                       @map("surname")
+  otherNames                  String                       @map("other_names")
+  gender                      Gender                       @default(MALE)
+  department                  Department                   @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  departmentId                String                       @map("department_id")
+  createdAt                   DateTime                     @default(now()) @map("created_at")
+  updatedAt                   DateTime                     @updatedAt @map("updated_at")
+  metadata                    Json                         @default("{}")
+  attendanceRegisterLecturers AttendanceRegisterLecturer[]
+
+  @@map("lecturers")
+}
+
+model Student {
+  id                         String                      @id @default(uuid())
+  surname                    String                      @map("surname")
+  otherNames                 String                      @map("other_names")
+  regno                      String                      @unique
+  gender                     Gender                      @default(MALE)
+  level                      Level
+  departmentId               String                      @map("department_id")
+  department                 Department                  @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  createdAt                  DateTime                    @default(now()) @map("created_at")
+  updatedAt                  DateTime                    @updatedAt @map("updated_at")
+  metadata                   Json                        @default("{}")
+  attendanceRegisterStudents AttendanceRegisterStudent[]
+  courseClashAttendances     CourseClashAttendance[]
+
+  @@map("students")
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum Level {
+  L_100
+  L_200
+  L_300
+  L_400
+  L_500
+  L_600
+  L_800
+  L_700
+  L_900
+  L_1000
+}
+
+enum Semester {
+  FIRST
+  SECOND
+}

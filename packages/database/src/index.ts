@@ -4,13 +4,21 @@ const { getAppDataPath } = appdataPath;
 import { existsSync } from "node:fs"
 import { readFile } from "node:fs/promises"
 
-async function Database(password: string = "password"): Promise<PostgresInstance> {
+async function Database(password: string = "password", forceInitialization: boolean = false): Promise<PostgresInstance> {
     const databaseDir = getAppDataPath("sars-data/db")
     const dbName = "sars-db"
-    const pgInstance = await Postgres.create(null, { databaseDir, password })
-    const dataDefinitionSQLQuery = await readFile("./utils/query.sql", "utf8")
+    const pgInstance = await Postgres.create(null, {
+        databaseDir,
+        password,
+        overwriteDatabaseDir: forceInitialization
+    })
+    const dataDefinitionSQLQuery = await readFile("../utils/query.sql", "utf8")
 
     if (!existsSync(databaseDir)) {
+        await pgInstance.initialize()
+    }
+
+    if (forceInitialization) {
         await pgInstance.initialize()
     }
 
@@ -28,5 +36,3 @@ async function Database(password: string = "password"): Promise<PostgresInstance
 }
 
 export default Database;
-
-Database("password123")

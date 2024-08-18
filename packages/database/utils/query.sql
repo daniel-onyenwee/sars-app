@@ -54,8 +54,6 @@ CREATE TABLE IF NOT EXISTS "lecturers" (
     "surname" TEXT NOT NULL,
     "other_names" TEXT NOT NULL,
     "gender" "Gender" NOT NULL DEFAULT 'MALE',
-    "username" TEXT NOT NULL,
-    "password" TEXT NOT NULL,
     "department_id" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
@@ -69,7 +67,6 @@ CREATE TABLE IF NOT EXISTS "students" (
     "surname" TEXT NOT NULL,
     "other_names" TEXT NOT NULL,
     "regno" TEXT NOT NULL,
-    "password" TEXT NOT NULL,
     "gender" "Gender" NOT NULL DEFAULT 'MALE',
     "level" "Level" NOT NULL,
     "department_id" TEXT NOT NULL,
@@ -120,7 +117,6 @@ CREATE TABLE IF NOT EXISTS "class_attendances" (
     "date" DATE NOT NULL,
     "start_time" TIME NOT NULL,
     "end_time" TIME NOT NULL,
-    "submitted_at" TIMESTAMP(3),
     "attendance_register_lecturer_id" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
@@ -155,6 +151,20 @@ CREATE TABLE IF NOT EXISTS "course_clash_attendances" (
 
     CONSTRAINT "course_clash_attendances_pkey" PRIMARY KEY ("id")
 );
+
+CREATE UNIQUE INDEX IF NOT EXISTS "courses_code_key" ON "courses"("code");
+
+CREATE UNIQUE INDEX IF NOT EXISTS "students_regno_key" ON "students"("regno");
+
+CREATE UNIQUE INDEX IF NOT EXISTS "attendance_registers_course_id_session_key" ON "attendance_registers"("course_id", "session");
+
+CREATE UNIQUE INDEX IF NOT EXISTS "attendance_register_lecturers_attendance_register_id_lectur_key" ON "attendance_register_lecturers"("attendance_register_id", "lecturer_id");
+
+CREATE UNIQUE INDEX IF NOT EXISTS "attendance_register_students_attendance_register_id_student_key" ON "attendance_register_students"("attendance_register_id", "student_id");
+
+CREATE UNIQUE INDEX IF NOT EXISTS "class_attendees_class_attendance_id_attendance_register_stu_key" ON "class_attendees"("class_attendance_id", "attendance_register_student_id");
+
+CREATE UNIQUE INDEX IF NOT EXISTS "course_clash_attendances_class_attendee_id_key" ON "course_clash_attendances"("class_attendee_id");
 
 -- Check and add constraint for departments.faculty_id
 DO $$

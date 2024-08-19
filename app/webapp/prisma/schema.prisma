@@ -10,12 +10,12 @@ datasource db {
 model AttendanceRegisterLecturer {
   id                   String             @id @default(uuid())
   attendanceRegisterId String             @map("attendance_register_id")
-  attendanceRegister   AttendanceRegister @relation(fields: [attendanceRegisterId], references: [id], onDelete: Cascade)
   lecturerId           String             @map("lecturer_id")
-  lecturer             Lecturer           @relation(fields: [lecturerId], references: [id], onDelete: Cascade)
   createdAt            DateTime           @default(now()) @map("created_at")
   updatedAt            DateTime           @updatedAt @map("updated_at")
   metadata             Json               @default("{}")
+  attendanceRegister   AttendanceRegister @relation(fields: [attendanceRegisterId], references: [id], onDelete: Cascade)
+  lecturer             Lecturer           @relation(fields: [lecturerId], references: [id], onDelete: Cascade)
   classAttendances     ClassAttendance[]
 
   @@unique([attendanceRegisterId, lecturerId])
@@ -25,12 +25,12 @@ model AttendanceRegisterLecturer {
 model AttendanceRegisterStudent {
   id                   String             @id @default(uuid())
   attendanceRegisterId String             @map("attendance_register_id")
-  attendanceRegister   AttendanceRegister @relation(fields: [attendanceRegisterId], references: [id], onDelete: Cascade)
   studentId            String             @map("student_id")
-  student              Student            @relation(fields: [studentId], references: [id], onDelete: Cascade)
   createdAt            DateTime           @default(now()) @map("created_at")
   updatedAt            DateTime           @updatedAt @map("updated_at")
   metadata             Json               @default("{}")
+  attendanceRegister   AttendanceRegister @relation(fields: [attendanceRegisterId], references: [id], onDelete: Cascade)
+  student              Student            @relation(fields: [studentId], references: [id], onDelete: Cascade)
   classAttendees       ClassAttendee[]
 
   @@unique([attendanceRegisterId, studentId])
@@ -42,12 +42,12 @@ model AttendanceRegister {
   courseId                    String                       @map("course_id")
   session                     String
   decision                    Json                         @default("[]")
-  course                      Course                       @relation(fields: [courseId], references: [id], onDelete: Cascade)
   createdAt                   DateTime                     @default(now()) @map("created_at")
   updatedAt                   DateTime                     @updatedAt @map("updated_at")
   metadata                    Json                         @default("{}")
   attendanceRegisterLecturers AttendanceRegisterLecturer[]
   attendanceRegisterStudents  AttendanceRegisterStudent[]
+  course                      Course                       @relation(fields: [courseId], references: [id], onDelete: Cascade)
   classAttendances            ClassAttendance[]
 
   @@unique([courseId, session])
@@ -57,15 +57,15 @@ model AttendanceRegister {
 model ClassAttendance {
   id                           String                     @id @default(uuid())
   attendanceRegisterId         String                     @map("attendance_register_id")
-  attendanceRegister           AttendanceRegister         @relation(fields: [attendanceRegisterId], references: [id], onDelete: Cascade)
   date                         DateTime                   @db.Date
   startTime                    DateTime                   @map("start_time") @db.Time(6)
   endTime                      DateTime                   @map("end_time") @db.Time(6)
   attendanceRegisterLecturerId String                     @map("attendance_register_lecturer_id")
-  attendanceRegisterLecturer   AttendanceRegisterLecturer @relation(fields: [attendanceRegisterLecturerId], references: [id], onDelete: Cascade)
   createdAt                    DateTime                   @default(now()) @map("created_at")
   updatedAt                    DateTime                   @updatedAt @map("updated_at")
   metadata                     Json                       @default("{}")
+  attendanceRegister           AttendanceRegister         @relation(fields: [attendanceRegisterId], references: [id], onDelete: Cascade)
+  attendanceRegisterLecturer   AttendanceRegisterLecturer @relation(fields: [attendanceRegisterLecturerId], references: [id], onDelete: Cascade)
   classAttendees               ClassAttendee[]
 
   @@map("class_attendances")
@@ -74,12 +74,12 @@ model ClassAttendance {
 model ClassAttendee {
   id                          String                    @id @default(uuid())
   classAttendanceId           String                    @map("class_attendance_id")
-  classAttendance             ClassAttendance           @relation(fields: [classAttendanceId], references: [id], onDelete: Cascade)
   attendanceRegisterStudentId String                    @map("attendance_register_student_id")
-  attendanceRegisterStudent   AttendanceRegisterStudent @relation(fields: [attendanceRegisterStudentId], references: [id], onDelete: Cascade)
   createdAt                   DateTime                  @default(now()) @map("created_at")
   updatedAt                   DateTime                  @updatedAt @map("updated_at")
   metadata                    Json                      @default("{}")
+  attendanceRegisterStudent   AttendanceRegisterStudent @relation(fields: [attendanceRegisterStudentId], references: [id], onDelete: Cascade)
+  classAttendance             ClassAttendance           @relation(fields: [classAttendanceId], references: [id], onDelete: Cascade)
   courseClashAttendance       CourseClashAttendance?
 
   @@unique([classAttendanceId, attendanceRegisterStudentId])
@@ -89,11 +89,8 @@ model ClassAttendee {
 model CourseClashAttendance {
   id              String        @id @default(uuid())
   courseId        String        @map("course_id")
-  course          Course        @relation(fields: [courseId], references: [id], onDelete: Cascade)
   studentId       String        @map("student_id")
-  student         Student       @relation(fields: [studentId], references: [id], onDelete: Cascade)
   classAttendeeId String        @unique @map("class_attendee_id")
-  classAttendee   ClassAttendee @relation(fields: [classAttendeeId], references: [id], onDelete: Cascade)
   session         String
   date            DateTime      @db.Date
   startTime       DateTime      @map("start_time") @db.Time(6)
@@ -101,6 +98,9 @@ model CourseClashAttendance {
   createdAt       DateTime      @default(now()) @map("created_at")
   updatedAt       DateTime      @updatedAt @map("updated_at")
   metadata        Json          @default("{}")
+  classAttendee   ClassAttendee @relation(fields: [classAttendeeId], references: [id], onDelete: Cascade)
+  course          Course        @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  student         Student       @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
   @@map("course_clash_attendances")
 }
@@ -111,13 +111,13 @@ model Course {
   code                   String                  @unique
   semester               Semester
   level                  Level
-  department             Department              @relation(fields: [departmentId], references: [id], onDelete: Cascade)
   departmentId           String                  @map("department_id")
   createdAt              DateTime                @default(now()) @map("created_at")
   updatedAt              DateTime                @updatedAt @map("updated_at")
   metadata               Json                    @default("{}")
   attendanceRegisters    AttendanceRegister[]
   courseClashAttendances CourseClashAttendance[]
+  department             Department              @relation(fields: [departmentId], references: [id], onDelete: Cascade)
 
   @@map("courses")
 }
@@ -125,15 +125,15 @@ model Course {
 model Department {
   id        String     @id @default(uuid())
   name      String
-  faculty   Faculty    @relation(fields: [facultyId], references: [id], onDelete: Cascade)
   facultyId String     @map("faculty_id")
   levels    Level[]    @default([L_100])
-  courses   Course[]
-  lecturers Lecturer[]
-  students  Student[]
   metadata  Json       @default("{}")
   createdAt DateTime   @default(now()) @map("created_at")
   updatedAt DateTime   @updatedAt @map("updated_at")
+  courses   Course[]
+  faculty   Faculty    @relation(fields: [facultyId], references: [id], onDelete: Cascade)
+  lecturers Lecturer[]
+  students  Student[]
 
   @@map("departments")
 }
@@ -141,10 +141,10 @@ model Department {
 model Faculty {
   id          String       @id @default(uuid())
   name        String
-  departments Department[]
   createdAt   DateTime     @default(now()) @map("created_at")
   updatedAt   DateTime     @updatedAt @map("updated_at")
   metadata    Json         @default("{}")
+  departments Department[]
 
   @@map("faculties")
 }
@@ -154,12 +154,13 @@ model Lecturer {
   surname                     String                       @map("surname")
   otherNames                  String                       @map("other_names")
   gender                      Gender                       @default(MALE)
-  department                  Department                   @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  username                    String                       @unique
   departmentId                String                       @map("department_id")
   createdAt                   DateTime                     @default(now()) @map("created_at")
   updatedAt                   DateTime                     @updatedAt @map("updated_at")
   metadata                    Json                         @default("{}")
   attendanceRegisterLecturers AttendanceRegisterLecturer[]
+  department                  Department                   @relation(fields: [departmentId], references: [id], onDelete: Cascade)
 
   @@map("lecturers")
 }
@@ -172,12 +173,12 @@ model Student {
   gender                     Gender                      @default(MALE)
   level                      Level
   departmentId               String                      @map("department_id")
-  department                 Department                  @relation(fields: [departmentId], references: [id], onDelete: Cascade)
   createdAt                  DateTime                    @default(now()) @map("created_at")
   updatedAt                  DateTime                    @updatedAt @map("updated_at")
   metadata                   Json                        @default("{}")
   attendanceRegisterStudents AttendanceRegisterStudent[]
   courseClashAttendances     CourseClashAttendance[]
+  department                 Department                  @relation(fields: [departmentId], references: [id], onDelete: Cascade)
 
   @@map("students")
 }

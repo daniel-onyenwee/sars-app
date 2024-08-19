@@ -1,24 +1,43 @@
-import { Postgres, type PostgresInstance } from "postgres-mini"
+import { Postgres, type PostgresInstance, type PostgresInstanceOptions } from "postgres-mini"
 import appdataPath from "appdata-path";
 const { getAppDataPath } = appdataPath;
 import { existsSync } from "node:fs"
 import { readFile } from "node:fs/promises"
+import { dirname, join } from "node:path"
+import { fileURLToPath } from "node:url"
 
-async function Database(password: string = "password", forceInitialization: boolean = false): Promise<PostgresInstance> {
-    const databaseDir = getAppDataPath("sars-data/db")
+type ExcludeOptions = "persistent" | "createPostgresUser" | "postgresFlags" | "initdbFlags" | "user"
+
+type DatabaseOptions = Partial<Omit<PostgresInstanceOptions, ExcludeOptions>>
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
+
+async function Database(options: DatabaseOptions = {}): Promise<PostgresInstance> {
+    const {
+        password = "password",
+        overwriteDatabaseDir = false,
+        databaseDir = getAppDataPath("sars-data/db"),
+        port,
+        onError = console.error,
+        onLog = console.log
+    } = options
+
     const dbName = "sars-db"
     const pgInstance = await Postgres.create(null, {
         databaseDir,
         password,
-        overwriteDatabaseDir: forceInitialization
+        overwriteDatabaseDir,
+        port,
+        onError,
+        onLog
     })
-    const dataDefinitionSQLQuery = await readFile("../utils/query.sql", "utf8")
+    const dataDefinitionSQLQuery = await readFile(join(__dirname, "../", "utils/query.sql"), "utf8")
 
     if (!existsSync(databaseDir)) {
         await pgInstance.initialize()
     }
 
-    if (forceInitialization) {
+    if (overwriteDatabaseDir) {
         await pgInstance.initialize()
     }
 
@@ -36,3 +55,7 @@ async function Database(password: string = "password", forceInitialization: bool
 }
 
 export default Database;
+
+export {
+    Postgres
+}

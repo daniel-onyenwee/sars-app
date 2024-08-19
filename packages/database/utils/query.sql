@@ -54,6 +54,7 @@ CREATE TABLE IF NOT EXISTS "lecturers" (
     "surname" TEXT NOT NULL,
     "other_names" TEXT NOT NULL,
     "gender" "Gender" NOT NULL DEFAULT 'MALE',
+    "username" TEXT NOT NULL,
     "department_id" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
@@ -153,6 +154,8 @@ CREATE TABLE IF NOT EXISTS "course_clash_attendances" (
 );
 
 CREATE UNIQUE INDEX IF NOT EXISTS "courses_code_key" ON "courses"("code");
+
+CREATE UNIQUE INDEX IF NOT EXISTS "lecturers_username_key" ON "lecturers"("username");
 
 CREATE UNIQUE INDEX IF NOT EXISTS "students_regno_key" ON "students"("regno");
 

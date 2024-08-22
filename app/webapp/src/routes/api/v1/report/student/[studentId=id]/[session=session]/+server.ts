@@ -1,5 +1,6 @@
-import { generateStudentReport, json, prismaClient } from "@/utils"
+import { generateStudentReport, json } from "@/utils"
 import type { RequestHandler } from "./$types"
+import { prismaClient } from "@/server"
 
 type ArrangeBy = "courseTitle" | "courseCode" | "semester"
 

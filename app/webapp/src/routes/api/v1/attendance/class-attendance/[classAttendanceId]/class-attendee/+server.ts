@@ -1,5 +1,6 @@
-import { json, prismaClient } from "@/utils"
+import { json } from "@/utils"
 import type { RequestHandler } from "./$types"
+import { prismaClient } from "@/server"
 
 interface ClassAttendeeSurnameQueryOrderByObject {
     attendanceRegisterStudent: {

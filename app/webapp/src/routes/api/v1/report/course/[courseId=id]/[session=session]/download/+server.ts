@@ -1,6 +1,7 @@
-import { createExcelFile, generateCourseReport, json, prismaClient } from "@/utils"
+import { generateCourseReport, json } from "@/utils"
 import type { RequestHandler } from "./$types"
 import { format } from "date-fns"
+import { prismaClient, createExcelFile } from "@/server"
 
 type ArrangeBy = "name" | "regno"
 

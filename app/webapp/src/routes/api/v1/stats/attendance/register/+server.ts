@@ -1,4 +1,5 @@
-import { getCurrentSession, json, prismaClient } from "@/utils"
+import { getCurrentSession, json } from "@/utils"
+import { prismaClient } from "@/server"
 import type { RequestHandler } from "./$types"
 import type { $Enums } from "@prisma/client"
 

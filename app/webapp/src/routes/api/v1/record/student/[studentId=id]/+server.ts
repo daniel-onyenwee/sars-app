@@ -1,6 +1,7 @@
 import type { $Enums } from "@prisma/client"
 import type { RequestHandler } from "./$types"
-import { json, prismaClient } from "@/utils"
+import { json } from "@/utils"
+import { prismaClient } from "@/server"
 
 interface StudentIDRequestBody {
     surname: string

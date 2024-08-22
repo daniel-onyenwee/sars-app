@@ -1,9 +1,9 @@
 import {
     attendanceRegisterDecisionExpressionTypeChecker,
     getCurrentSession,
-    json,
-    prismaClient
+    json
 } from "@/utils"
+import { prismaClient } from "@/server"
 import type { RequestHandler } from "./$types"
 import type { $Enums } from "@prisma/client"
 

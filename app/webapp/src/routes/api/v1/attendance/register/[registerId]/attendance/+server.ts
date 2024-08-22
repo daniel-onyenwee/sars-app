@@ -1,4 +1,5 @@
-import { attendanceRegisterStudentDecisionDeterminer, json, prismaClient } from "@/utils"
+import { attendanceRegisterStudentDecisionDeterminer, json } from "@/utils"
+import { prismaClient } from "@/server"
 import type { RequestHandler } from "./$types"
 
 interface RegisterIDAttendanceRequestBody {

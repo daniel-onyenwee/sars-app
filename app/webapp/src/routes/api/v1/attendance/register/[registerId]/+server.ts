@@ -1,8 +1,8 @@
 import {
     attendanceRegisterDecisionExpressionTypeChecker,
-    json,
-    prismaClient
+    json
 } from "@/utils"
+import { prismaClient } from "@/server"
 import type { RequestHandler } from "./$types"
 
 interface RegisterIDRequestBody {

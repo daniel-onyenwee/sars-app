@@ -1,4 +1,5 @@
-import { json, prismaClient } from "@/utils"
+import { json } from "@/utils"
+import { prismaClient } from "@/server"
 import type { RequestHandler } from "./$types"
 import { differenceInHours } from "date-fns"
 

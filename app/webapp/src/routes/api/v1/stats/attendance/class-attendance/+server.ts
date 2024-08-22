@@ -1,6 +1,7 @@
 import type { $Enums } from "@prisma/client"
 import type { RequestHandler } from "./$types"
-import { getCurrentSession, json, prismaClient } from "@/utils"
+import { prismaClient } from "@/server"
+import { getCurrentSession, json } from "@/utils"
 
 export const GET: RequestHandler = async ({ url }) => {
     let date = url.searchParams.get("date") || String()

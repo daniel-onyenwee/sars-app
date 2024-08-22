@@ -1,7 +1,8 @@
-import { getCurrentSession, json, mergeCourseClashQuery, prismaClient } from "@/utils"
+import { getCurrentSession, json } from "@/utils"
 import type { RequestHandler } from "./$types"
 import { Prisma, type $Enums } from "@prisma/client"
 import { differenceInHours, subMonths } from "date-fns"
+import { prismaClient, mergeCourseClashQuery } from "@/server"
 
 interface ClassAttendanceRequestBody {
     attendanceRegisterId: string

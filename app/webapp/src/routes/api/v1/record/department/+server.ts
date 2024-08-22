@@ -1,6 +1,7 @@
 import type { RequestHandler } from "./$types"
 import { $Enums } from "@prisma/client"
-import { prismaClient, json } from "$lib/utils"
+import { json } from "$lib/utils"
+import { prismaClient } from "@/server"
 
 type ArrangeBy = "name" | "updatedAt" | "createdAt" | "faculty"
 

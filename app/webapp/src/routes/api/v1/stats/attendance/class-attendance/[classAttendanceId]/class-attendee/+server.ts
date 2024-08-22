@@ -1,5 +1,6 @@
 import type { RequestHandler } from "./$types"
-import { json, prismaClient } from "@/utils"
+import { json } from "@/utils"
+import { prismaClient } from "@/server"
 
 export const GET: RequestHandler = async ({ params, url }) => {
     let classAttendanceId = params.classAttendanceId

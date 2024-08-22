@@ -1,8 +1,8 @@
 import {
     AttendanceNumberBasedProperties,
     AttendanceTextBasedProperties,
-    DecisionExpression,
-    SingleDecisionExpression
+    type DecisionExpression,
+    type SingleDecisionExpression
 } from "./constants.js"
 import { decisionExpressionTypeChecker } from "./type-checker.js"
 

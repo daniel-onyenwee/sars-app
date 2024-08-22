@@ -77,6 +77,9 @@ export {
     AttendanceNumberBasedProperties,
     AttendanceTextBasedProperties,
     AttendanceProperties,
+}
+
+export type {
     SingleDecisionExpression,
     DecisionExpression
 }

@@ -1,10 +1,10 @@
 import {
-    DecisionExpression,
-    SingleDecisionExpression,
     AttendanceNumberBasedOperator,
     AttendanceProperties,
     AttendanceTextBasedProperties,
-    AttendanceTextBasedOperator
+    AttendanceTextBasedOperator,
+    type DecisionExpression,
+    type SingleDecisionExpression,
 } from "./constants.js"
 
 type TypeCheckerResult = {

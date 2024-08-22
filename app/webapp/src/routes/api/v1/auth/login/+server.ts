@@ -46,10 +46,12 @@ export const POST: RequestHandler = async ({ request }) => {
         })
     }
 
-    let exp = Math.floor(addDays(new Date(), 1).getUTCMilliseconds() / 1000) + (2 * (60 * 60))
+    let expiresIn = addDays(new Date(), 1)
+
+    let exp = Math.floor(expiresIn.getTime() / 1000) + (2 * (60 * 60))
 
     const accessToken = await sign({
-        password: body,
+        password: body.password,
         exp
     }, env.ACCESS_TOKEN_SECRET)
 
@@ -58,7 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
         data: {
             refreshToken: env.REFRESH_TOKEN_SECRET,
             accessToken,
-            expiresIn: exp
+            expiresIn
         },
         error: null
     })

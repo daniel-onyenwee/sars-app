@@ -34,9 +34,14 @@ export default async function ({ prismaClient, courseId, session, name = undefin
         select: {
             decision: true,
             classAttendances: {
-                orderBy: {
-                    date: "asc"
-                },
+                orderBy: [
+                    {
+                        date: "asc"
+                    },
+                    {
+                        startTime: "asc"
+                    }
+                ],
                 select: {
                     id: true,
                     date: true,

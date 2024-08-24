@@ -41,9 +41,14 @@ export const GET: RequestHandler = async ({ params }) => {
                 }
             },
             classAttendances: {
-                orderBy: {
-                    date: "asc"
-                },
+                orderBy: [
+                    {
+                        date: "asc"
+                    },
+                    {
+                        startTime: "asc"
+                    }
+                ],
                 select: {
                     id: true,
                     date: true,

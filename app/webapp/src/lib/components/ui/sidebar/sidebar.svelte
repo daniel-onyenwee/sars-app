@@ -22,7 +22,7 @@
 <nav class="flex flex-col items-start py-6 font-medium">
   <div class="flex rounded-full w-full flex-col items-center mb-7">
     <a
-      href="/admin"
+      href="/app"
       class="flex bg-primary items-center text-background p-1 rounded-lg"
     >
       <NotebookPen size={25} />
@@ -30,9 +30,9 @@
   </div>
   <ScrollArea class="px-5 w-full max-h-[480px] h-[90%]">
     <a
-      href="/admin"
+      href="/app"
       class="flex w-full h-fit items-center gap-x-3.5 transition-colors {currentPage ==
-      '/admin'
+      '/app'
         ? 'text-foreground'
         : 'text-muted-foreground hover:text-foreground'}"
     >
@@ -48,7 +48,7 @@
       >
         <button
           class="flex w-full h-fit justify-between items-center transition-colors {currentPage.startsWith(
-            '/admin/attendance'
+            '/app/attendance'
           )
             ? 'text-foreground'
             : 'text-muted-foreground hover:text-foreground'}"
@@ -67,9 +67,9 @@
       </Collapsible.Trigger>
       <Collapsible.Content class="py-1 pl-2 font-normal">
         <a
-          href="/admin/attendance/register"
+          href="/app/attendance/register"
           class="flex w-full h-fit pl-6 px-1 border-l items-center transition-colors {currentPage.startsWith(
-            '/admin/attendance/register'
+            '/app/attendance/register'
           )
             ? 'text-primary border-primary'
             : 'text-muted-foreground hover:text-foreground hover:border-foreground'}"
@@ -78,9 +78,9 @@
         </a>
         <div class="w-full h-2 border-l"></div>
         <a
-          href="/admin/attendance/class-attendance"
+          href="/app/attendance/class-attendance"
           class="text-base flex w-full h-fit pl-6 px-1 border-l items-center text-muted-foreground transition-colors hover:text-foreground hover:border-foreground {currentPage.startsWith(
-            '/admin/attendance/class-attendance'
+            '/app/attendance/class-attendance'
           )
             ? 'text-primary border-primary'
             : 'text-muted-foreground hover:text-foreground hover:border-foreground'}"
@@ -97,7 +97,7 @@
       >
         <button
           class="flex w-full h-fit justify-between items-center transition-colors {currentPage.startsWith(
-            '/admin/record'
+            '/app/record'
           )
             ? 'text-foreground'
             : 'text-muted-foreground hover:text-foreground'}"
@@ -112,9 +112,9 @@
       </Collapsible.Trigger>
       <Collapsible.Content class="py-1 pl-2 font-normal">
         <a
-          href="/admin/record/faculty"
+          href="/app/record/faculty"
           class="flex w-full h-fit pl-6 px-1 border-l items-center transition-colors {currentPage.startsWith(
-            '/admin/record/faculty'
+            '/app/record/faculty'
           )
             ? 'text-primary border-primary'
             : 'text-muted-foreground hover:text-foreground hover:border-foreground'}"
@@ -123,9 +123,9 @@
         </a>
         <div class="w-full h-2 border-l"></div>
         <a
-          href="/admin/record/department"
+          href="/app/record/department"
           class="flex w-full h-fit pl-6 px-1 border-l items-center transition-colors {currentPage.startsWith(
-            '/admin/record/department'
+            '/app/record/department'
           )
             ? 'text-primary border-primary'
             : 'text-muted-foreground hover:text-foreground hover:border-foreground'}"
@@ -134,9 +134,9 @@
         </a>
         <div class="w-full h-2 border-l"></div>
         <a
-          href="/admin/record/course"
+          href="/app/record/course"
           class="flex w-full h-fit pl-6 px-1 border-l items-center transition-colors {currentPage.startsWith(
-            '/admin/record/course'
+            '/app/record/course'
           )
             ? 'text-primary border-primary'
             : 'text-muted-foreground hover:text-foreground hover:border-foreground'}"
@@ -145,9 +145,9 @@
         </a>
         <div class="w-full h-2 border-l"></div>
         <a
-          href="/admin/record/lecturer"
+          href="/app/record/lecturer"
           class="flex w-full h-fit pl-6 px-1 border-l items-center transition-colors {currentPage.startsWith(
-            '/admin/record/lecturer'
+            '/app/record/lecturer'
           )
             ? 'text-primary border-primary'
             : 'text-muted-foreground hover:text-foreground hover:border-foreground'}"
@@ -156,9 +156,9 @@
         </a>
         <div class="w-full h-2 border-l"></div>
         <a
-          href="/admin/record/student"
+          href="/app/record/student"
           class="flex w-full h-fit pl-6 px-1 border-l items-center transition-colors {currentPage.startsWith(
-            '/admin/record/student'
+            '/app/record/student'
           )
             ? 'text-primary border-primary'
             : 'text-muted-foreground hover:text-foreground hover:border-foreground'}"
@@ -175,7 +175,7 @@
       >
         <button
           class="flex w-full h-fit justify-between items-center transition-colors {currentPage.startsWith(
-            '/admin/report'
+            '/app/report'
           )
             ? 'text-foreground'
             : 'text-muted-foreground hover:text-foreground'}"
@@ -190,9 +190,9 @@
       </Collapsible.Trigger>
       <Collapsible.Content class="py-1 pl-2 font-normal">
         <a
-          href="/admin/report/course"
+          href="/app/report/course"
           class="flex w-full h-fit pl-6 px-1 border-l items-center transition-colors {currentPage.startsWith(
-            '/admin/report/course'
+            '/app/report/course'
           )
             ? 'text-primary border-primary'
             : 'text-muted-foreground hover:text-foreground hover:border-foreground'}"
@@ -201,9 +201,9 @@
         </a>
         <div class="w-full h-2 border-l"></div>
         <a
-          href="/admin/report/lecturer"
+          href="/app/report/lecturer"
           class="flex w-full h-fit pl-6 px-1 border-l items-center transition-colors {currentPage.startsWith(
-            '/admin/report/lecturer'
+            '/app/report/lecturer'
           )
             ? 'text-primary border-primary'
             : 'text-muted-foreground hover:text-foreground hover:border-foreground'}"
@@ -212,9 +212,9 @@
         </a>
         <div class="w-full h-2 border-l"></div>
         <a
-          href="/admin/report/student"
+          href="/app/report/student"
           class="flex w-full h-fit pl-6 px-1 border-l items-center transition-colors {currentPage.startsWith(
-            '/admin/report/student'
+            '/app/report/student'
           )
             ? 'text-primary border-primary'
             : 'text-muted-foreground hover:text-foreground hover:border-foreground'}"

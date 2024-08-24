@@ -64,7 +64,9 @@ const getBreadCrumbItems = (currentPage: string) => {
             jointPaths = `${jointPaths}/${path}`
         }
 
-        if (["record", "attendance", "report"].includes(path)) {
+        if (path == "app") {
+            items.push({ href: "/app", label: "dashboard" })
+        } else if (["record", "attendance", "report"].includes(path)) {
             items.push({ href: "#", label: path })
         } else if (["department", "course", "student", "lecturer", "register"].includes(path)) {
             items.push({ href: jointPaths, label: path + "s" })
@@ -88,7 +90,7 @@ const getBreadCrumbItems = (currentPage: string) => {
 
 const getPageTitle = (currentPage: string) => {
     if (currentPage == "/app") {
-        return "Dashboard | SARs"
+        return "Dashboard - SARs"
     }
 
     let [thirdLastItem, secondLastItem, lastItem] = currentPage.split("/").slice(-3)
@@ -109,6 +111,6 @@ const getPageTitle = (currentPage: string) => {
         lastItem = lastItem.replace("-", " ")
         secondLastItem = secondLastItem.replace("-", " ")
 
-        return ` ${capitalizeText(lastItem, true)} | ${capitalizeText(secondLastItem, true)}`
+        return `${capitalizeText(lastItem, true)} | ${capitalizeText(secondLastItem, true)} - SARs`
     }
 }

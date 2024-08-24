@@ -516,12 +516,32 @@ export const POST: RequestHandler = async ({ request }) => {
         where: {
             date: body.date,
             attendanceRegisterId: body.attendanceRegisterId,
-            startTime: {
-                gte: body.startTime
-            },
-            endTime: {
-                lt: body.endTime
-            }
+            OR: [
+                {
+                    startTime: {
+                        lte: body.startTime
+                    },
+                    endTime: {
+                        gt: body.endTime
+                    }
+                },
+                {
+                    startTime: {
+                        lte: body.startTime
+                    },
+                    endTime: {
+                        gt: body.startTime
+                    }
+                },
+                {
+                    startTime: {
+                        lte: body.endTime
+                    },
+                    endTime: {
+                        gt: body.endTime
+                    }
+                }
+            ]
         }
     })
 

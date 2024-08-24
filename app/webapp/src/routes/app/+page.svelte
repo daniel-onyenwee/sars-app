@@ -35,6 +35,7 @@
       accessToken: data.session.accessToken,
       filter: {
         date: new Date().toISOString(),
+        session: getCurrentSession(),
       },
     });
     if (!todayClassAttendanceCountServiceResponse.data) {
@@ -49,7 +50,6 @@
       await statsClassAttendances({
         accessToken: data.session.accessToken,
         filter: {
-          date: new Date().toISOString(),
           session: getCurrentSession(),
         },
       });
@@ -133,7 +133,7 @@
       </Card.Description>
     </Card.Header>
     <Card.Footer>
-      <Button href="./admin/attendance/class-attendance?create">
+      <Button href="/app/attendance/class-attendance?create">
         Create Class attendance
       </Button>
     </Card.Footer>
@@ -326,7 +326,7 @@
     <Button
       size="sm"
       variant="ghost"
-      href="./admin/attendance/class-attendance"
+      href="/app/attendance/class-attendance"
       class="gap-1 {!initialDataLoaded && 'hidden'}"
     >
       See more

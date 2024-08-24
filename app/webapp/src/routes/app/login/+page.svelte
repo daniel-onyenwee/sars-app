@@ -59,7 +59,7 @@
 </script>
 
 <svelte:head>
-  <title>Login</title>
+  <title>Login - SARs</title>
 </svelte:head>
 
 <main class="bg-muted/40 h-screen w-screen flex justify-center items-center">

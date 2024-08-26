@@ -153,7 +153,7 @@ export default async function ({ prismaClient, courseId, session, name = undefin
                 attendances[classAttendanceId] = isPresent ? 1 : 0
             })
 
-            studentPercentageOfClassAttended = ((studentNumberOfClassAttended / numberOfClassTaught) * 100)
+            studentPercentageOfClassAttended = ((studentNumberOfClassAttended / (numberOfClassTaught || 1)) * 100)
 
             return ({
                 id,

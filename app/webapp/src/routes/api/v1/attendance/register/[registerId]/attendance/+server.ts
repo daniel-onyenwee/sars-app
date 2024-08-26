@@ -205,7 +205,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
             })
 
             if (studentNumberOfClassAttended > 0) {
-                studentPercentageOfClassAttended = ((studentNumberOfClassAttended / numberOfClassTaught) * 100)
+                studentPercentageOfClassAttended = ((studentNumberOfClassAttended / (numberOfClassTaught || 1)) * 100)
             }
 
 

@@ -9,7 +9,7 @@
 	],
 	"scripts": {
 		"dev": "vite dev",
-		"build": "vite build",
+		"build": "vite build && tsc \"./build/handler.js\" --declaration --allowJs --emitDeclarationOnly",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"prisma:db:push": "prisma db push",

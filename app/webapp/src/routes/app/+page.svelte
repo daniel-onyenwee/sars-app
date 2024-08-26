@@ -83,7 +83,6 @@
       classAttendances = [...classAttendances, ...serviceResponse.data];
       return;
     } else {
-      console.log(serviceResponse.error);
       throw new Error(JSON.stringify(serviceResponse.error));
     }
   }

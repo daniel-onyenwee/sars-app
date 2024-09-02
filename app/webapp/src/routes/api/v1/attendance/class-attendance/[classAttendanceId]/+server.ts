@@ -266,12 +266,32 @@ export const PATCH: RequestHandler = async ({ params, request }) => {
                 },
                 date: body.date || classAttendancesCount.date,
                 attendanceRegisterId: classAttendancesCount.attendanceRegisterId,
-                startTime: {
-                    gte: body.startTime || classAttendancesCount.startTime
-                },
-                endTime: {
-                    lt: body.endTime || classAttendancesCount.endTime
-                }
+                OR: [
+                    {
+                        startTime: {
+                            lte: body.startTime || classAttendancesCount.startTime
+                        },
+                        endTime: {
+                            gt: body.endTime || classAttendancesCount.endTime
+                        }
+                    },
+                    {
+                        startTime: {
+                            lte: body.startTime || classAttendancesCount.startTime
+                        },
+                        endTime: {
+                            gt: body.startTime || classAttendancesCount.startTime
+                        }
+                    },
+                    {
+                        startTime: {
+                            lte: body.endTime || classAttendancesCount.endTime
+                        },
+                        endTime: {
+                            gt: body.endTime || classAttendancesCount.endTime
+                        }
+                    }
+                ]
             }
         })
 

@@ -1,0 +1,33 @@
+{
+  "name": "@sars/engine",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sars app backend",
+  "type": "module",
+  "main": "lib/index.js",
+  "scripts": {
+    "build:exe": "bun build ./dist/engine.js --compile --minify --sourcemap=inline -e \"@sars/webapp\" -e \"@sars/database\" -e \"@sars/logger\" --outfile=./bin/engine",
+    "build:cli": "esbuild ./src/cli/index.ts --external:\"@sars/database\" --external:\"@sars/webapp\" --external:\"@sars/logger\" --bundle --minify --sourcemap --platform=node --outfile=./dist/engine.js --format=esm",
+    "build:lib": "tsc ./src/index.ts --outDir lib -d --module nodenext --moduleResolution nodenext",
+    "build": "npm run build:cli && npm run build:exe && npm run build:lib"
+  },
+  "keywords": [],
+  "author": "daniel-onyenwee",
+  "license": "ISC",
+  "dependencies": {
+    "@commander-js/extra-typings": "^12.1.0",
+    "@sars/database": "workspace:*",
+    "@sars/webapp": "workspace:*",
+    "@sars/logger": "workspace:*",
+    "commander": "^12.1.0",
+    "conf": "^13.0.1",
+    "express": "^4.19.2",
+    "find-free-ports": "^3.1.1",
+    "node-machine-id": "^1.1.12"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.5.0",
+    "esbuild": "0.23.1"
+  }
+}

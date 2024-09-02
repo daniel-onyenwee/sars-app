@@ -1,0 +1,30 @@
+{
+  "name": "@sars/logger",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sars app logger",
+  "type": "module",
+  "main": "lib/index.js",
+  "scripts": {
+    "ts:build": "tsc --build",
+    "ts:watch": "tsc --watch",
+    "prisma:generate": "prisma generate",
+    "prisma:studio": "prisma studio",
+    "prisma:db:push": "prisma db push",
+    "prisma:db:pull": "prisma db pull"
+  },
+  "keywords": [],
+  "author": "daniel-onyenwee",
+  "license": "ISC",
+  "dependencies": {
+    "@js-temporal/polyfill": "^0.4.4",
+    "@prisma/client": "5.18.0",
+    "date-fns": "^3.6.0",
+    "pg": "^8.12.0",
+    "prisma": "^5.18.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.5.0",
+    "@types/pg": "^8.11.8"
+  }
+}

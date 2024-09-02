@@ -1,43 +1,43 @@
-import { Postgres, type PostgresInstance, type PostgresInstanceOptions } from "postgres-mini"
-import appdataPath from "appdata-path";
-const { getAppDataPath } = appdataPath;
+import {
+    Postgres,
+    type PostgresInstance,
+    type PostgresInstanceOptions
+} from "postgres-mini"
+import appdataPath from "appdata-path"
+const { getAppDataPath } = appdataPath
+import { dbDefinitionQuery } from "./utils/index.js"
 import { existsSync } from "node:fs"
-import { readFile } from "node:fs/promises"
-import { dirname, join } from "node:path"
-import { fileURLToPath } from "node:url"
 
 type ExcludeOptions = "persistent" | "createPostgresUser" | "postgresFlags" | "initdbFlags" | "user"
 
-type DatabaseOptions = Partial<Omit<PostgresInstanceOptions, ExcludeOptions>>
-
-const __dirname = dirname(fileURLToPath(import.meta.url))
+type DatabaseOptions = Partial<Omit<PostgresInstanceOptions & { dbName: string }, ExcludeOptions>>
 
 async function Database(options: DatabaseOptions = {}): Promise<PostgresInstance> {
-    const {
-        password = "password",
-        overwriteDatabaseDir = false,
-        databaseDir = getAppDataPath("sars-data/db"),
-        port,
-        onError = console.error,
-        onLog = console.log
-    } = options
+    const dbName = options.dbName || "sars-db"
 
-    const dbName = "sars-db"
-    const pgInstance = await Postgres.create(null, {
-        databaseDir,
-        password,
-        overwriteDatabaseDir,
-        port,
-        onError,
-        onLog
-    })
-    const dataDefinitionSQLQuery = await readFile(join(__dirname, "../", "utils/query.sql"), "utf8")
+    delete options.dbName
 
-    if (!existsSync(databaseDir)) {
+    let pgInstanceOptions: Partial<PostgresInstanceOptions> = {
+        password: "password",
+        overwriteDatabaseDir: false,
+        databaseDir: getAppDataPath("sars-data/db"),
+        onError: console.error,
+        onLog: console.log
+    }
+
+    for (const key in options) {
+        if (Object(options)[key]) {
+            Object(pgInstanceOptions)[key] = Object(options)[key]
+        }
+    }
+
+    const pgInstance = await Postgres.create(null, pgInstanceOptions)
+
+    if (options.databaseDir && !existsSync(options.databaseDir)) {
         await pgInstance.initialize()
     }
 
-    if (overwriteDatabaseDir) {
+    if (options.overwriteDatabaseDir) {
         await pgInstance.initialize()
     }
 
@@ -49,7 +49,7 @@ async function Database(options: DatabaseOptions = {}): Promise<PostgresInstance
         await pgInstance.createDatabase(dbName)
     }
 
-    await pgInstance.query(dataDefinitionSQLQuery, [], dbName)
+    await pgInstance.query(dbDefinitionQuery, [], dbName)
 
     return pgInstance
 }
@@ -57,5 +57,6 @@ async function Database(options: DatabaseOptions = {}): Promise<PostgresInstance
 export default Database;
 
 export {
-    Postgres
+    Postgres,
+    type PostgresInstance
 }

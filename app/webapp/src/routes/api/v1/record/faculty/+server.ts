@@ -86,7 +86,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     body.name = body.name || String()
-    body.name = body.name = body.name
+    body.name = body.name
         .toUpperCase()
         .replace("FACULTY OF", String())
         .replace("FACULTY", String())

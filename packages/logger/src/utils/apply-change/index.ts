@@ -1,6 +1,6 @@
 import { $Enums, Prisma, PrismaClient } from "@prisma/client"
 import Appliers from "./appliers/index.js"
-import type { Models, Tables } from "../types.ts"
+import type { Tables } from "../types.ts"
 import { isBefore, isEqual } from "date-fns"
 import { tableModelName } from "../table-model-name.js"
 
@@ -96,11 +96,11 @@ export async function applyChange(loggerId: string, dbClient: PrismaClient, cont
             contributor.lastEntryAt = change.createdAt
             oldContributor = contributor
             changeMade = true
-        } catch (error) {
+        } catch (error: any) {
             await dbClient.logState.create({
                 data: { mode: "UNDO", loggerId }
             })
-            throw error
+            throw new Error(`${applierName} [${change.action}] ${error.message}`)
         }
     }
 

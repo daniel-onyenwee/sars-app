@@ -5,6 +5,10 @@
   "description": "Sars app backend",
   "type": "module",
   "main": "lib/index.js",
+  "exports": {
+    "require": "./lib/index.cjs",
+    "import": "./lib/index.js"
+  },
   "scripts": {
     "build:exe": "bun build ./dist/engine.js --compile --minify --sourcemap=inline -e \"@sars/webapp\" -e \"@sars/database\" -e \"@sars/logger\" --outfile=./bin/engine",
     "build:cli": "esbuild ./src/cli/index.ts --external:\"@sars/database\" --external:\"@sars/webapp\" --external:\"@sars/logger\" --bundle --minify --sourcemap --platform=node --outfile=./dist/engine.js --format=esm",

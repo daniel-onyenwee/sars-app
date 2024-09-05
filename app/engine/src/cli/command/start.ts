@@ -36,7 +36,7 @@ const startAction: Parameters<typeof startCommand.action>[0] = async function ({
         sessionKey = config.get("webapp.sessionKey"),
         adminPassword = config.get("admin.password")
 
-    console.log(`Started database at ${databaseUrl}`)
+    console.log(`Started database at ${databaseUrl}\n`)
 
     try {
         console.log("Restoring system state")

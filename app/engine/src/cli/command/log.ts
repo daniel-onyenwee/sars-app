@@ -58,7 +58,7 @@ const logAction: Parameters<typeof logCommand.action>[0] = async function ({ dat
 }
 
 export const logCommand = new Command("log")
-    .description("Log the SARs engine log .")
+    .description("Show, apply and output the SARs engine log changes.")
     .requiredOption("-d, --data-url <url>", "SARs postgres database url.")
     .requiredOption("-i, --logger-id <id>", "Unique identification of user.")
     .option("-e, --entries", "Show all the log entries.")

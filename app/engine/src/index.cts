@@ -1,6 +1,5 @@
 import { spawn } from "node:child_process"
-import { dirname, join } from "node:path"
-import { fileURLToPath } from "node:url"
+import { join } from "node:path"
 
 type EngineCommands = "start" | "config" | "log"
 
@@ -38,8 +37,6 @@ type EngineParameter<Command extends EngineCommands> = (Command extends "start" 
     onMessage: (message: string) => void
     onError: (error: Error) => void
 }
-
-const __dirname = dirname(fileURLToPath(import.meta.url))
 
 const Engine = function <Command extends EngineCommands>({ command, options, argument, onError, onMessage }: EngineParameter<Command>) {
     const engineExePath = join(__dirname, "../bin/engine.exe")

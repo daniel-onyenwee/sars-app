@@ -9,11 +9,15 @@
     "require": "./lib/index.cjs",
     "import": "./lib/index.js"
   },
+  "files": [
+    "bin",
+    "lib"
+  ],
   "scripts": {
     "build:exe": "bun build ./dist/engine.js --compile --minify --sourcemap=inline -e \"@sars/webapp\" -e \"@sars/database\" -e \"@sars/logger\" --outfile=./bin/engine",
     "build:cli": "esbuild ./src/cli/index.ts --external:\"@sars/database\" --external:\"@sars/webapp\" --external:\"@sars/logger\" --bundle --minify --sourcemap --platform=node --outfile=./dist/engine.js --format=esm",
-    "build:lib": "tsc ./src/index.ts --outDir lib -d --module nodenext --moduleResolution nodenext",
-    "build": "npm run build:cli && npm run build:exe && npm run build:lib"
+    "build:lib": "tsc ./src/index.ts ./src/index.cts --outDir lib -d --module nodenext --moduleResolution nodenext",
+    "build": "pnpm run build:cli && pnpm run build:exe && pnpm run build:lib"
   },
   "keywords": [],
   "author": "daniel-onyenwee",

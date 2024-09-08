@@ -2,18 +2,19 @@ import { spawn } from "node:child_process"
 import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
 
+const __dirname = dirname(fileURLToPath(import.meta.url))
+
 type EngineCommands = "start" | "config" | "log"
 
 type EngineArguments<Command extends Omit<EngineCommands, "start">> = Command extends "config" ? { key?: string, value?: string } : {}
 
 type ConfigEngineOptions = {
-    password: string,
     reset?: true,
     appDataDir: string
 }
 
 type LogEngineOptions = {
-    dataUrl: string;
+    databaseUrl: string;
     loggerId: string;
     entries?: true;
     output?: string;
@@ -37,17 +38,16 @@ type EngineParameter<Command extends EngineCommands> = (Command extends "start" 
 }) & {
     onMessage: (message: string) => void
     onError: (error: Error) => void
+    externalEnginePath?: string
 }
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
-
-const Engine = function <Command extends EngineCommands>({ command, options, argument, onError, onMessage }: EngineParameter<Command>) {
-    const engineExePath = join(__dirname, "../bin/engine.exe")
+const Engine = function <Command extends EngineCommands>({ command, options, argument, onError, onMessage, externalEnginePath }: EngineParameter<Command>) {
+    const engineExePath = externalEnginePath || join(__dirname, "../bin/engine.exe")
 
     let engineArgs: string[] = [command]
 
     if (command == "log") {
-        engineArgs.push("-d", options.dataUrl, "-i", options.loggerId)
+        engineArgs.push("-d", options.databaseUrl, "-i", options.loggerId)
 
         if (options.output) {
             engineArgs.push("-o", options.output)
@@ -59,8 +59,6 @@ const Engine = function <Command extends EngineCommands>({ command, options, arg
     }
 
     if (command == "config") {
-        engineArgs.push("-p", options.password)
-
         if (options.reset) {
             engineArgs.push("-r")
         }
@@ -71,7 +69,7 @@ const Engine = function <Command extends EngineCommands>({ command, options, arg
         }
     }
 
-    let shellProcess = spawn(engineExePath, engineArgs)
+    let shellProcess = spawn(engineExePath.replace(/\\/g, '/'), engineArgs)
 
     shellProcess.stdout.on('data', (chunk) => {
         let message = chunk.toString("utf-8")

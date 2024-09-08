@@ -1,16 +1,11 @@
 import { Command } from "@commander-js/extra-typings"
 import { setupConfig } from "../../utils/index.js"
 
-const configAction: Parameters<typeof configCommand.action>[0] = async function (key, value, { appDataDir, password, reset }) {
+const configAction: Parameters<typeof configCommand.action>[0] = async function (key, value, { appDataDir, reset }) {
     let config = await setupConfig(appDataDir)
 
     if (!config) {
         console.log("error: user configuration request failed")
-        return
-    }
-
-    if (config.get("admin.password") != password) {
-        console.log("error: incorrect admin password")
         return
     }
 
@@ -19,7 +14,7 @@ const configAction: Parameters<typeof configCommand.action>[0] = async function 
             config.reset("webapp", "admin")
         }
 
-        console.log(JSON.parse(JSON.stringify(config.store, null, 2)))
+        console.log(JSON.stringify(config.store, null, 2))
     } else if (key) {
         if (!config.has(key)) {
             console.log(`error: config option '${key}' not found`)
@@ -28,17 +23,17 @@ const configAction: Parameters<typeof configCommand.action>[0] = async function 
 
         if (reset) {
             if (key.includes("db") || key == "admin.loggerId") {
-                console.log(config.get(key))
+                console.log(JSON.stringify(config.get(key), null, 2))
                 return
             }
 
             config.reset(key as any)
-            console.log(config.get(key))
+            console.log(JSON.stringify(config.get(key), null, 2))
             return
         }
 
         if (!value) {
-            console.log(config.get(key))
+            console.log(JSON.stringify(config.get(key), null, 2))
             return
         }
 
@@ -49,7 +44,7 @@ const configAction: Parameters<typeof configCommand.action>[0] = async function 
 
         try {
             config.set(key as any, value)
-            console.log(value)
+            console.log(JSON.stringify(value, null, 2))
         } catch (error: any) {
             if (error instanceof Error) {
                 const unwantedStr = "Config schema violation: "
@@ -64,7 +59,6 @@ export const configCommand = new Command("config")
     .argument("[key]", "Config key to get or update. e.g webapp.sessionKey")
     .argument("[value]", "Config value to update with.")
     .requiredOption("-a, --app-data-dir <dir>", "SARs desktop app app-data directory.")
-    .requiredOption("-p, --password <admin-password>", "SARs engine admin password.The default admin password is 'password', if not changed.")
     .option("-r, --reset", "Reset configuration.")
     .alias("c")
     .action(configAction)

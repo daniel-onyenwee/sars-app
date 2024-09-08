@@ -21,11 +21,7 @@ const startAction: Parameters<typeof startCommand.action>[0] = async function ({
         pg = await setupDb(appDataDir, config.get("db.password"))
     } catch (error) {
         console.log("error: database failed to start")
-        pg = null
-    }
-
-    if (!pg) {
-        process.exit()
+        return
     }
 
     let pgClient = pg.client(dbName)
@@ -36,7 +32,7 @@ const startAction: Parameters<typeof startCommand.action>[0] = async function ({
         sessionKey = config.get("webapp.sessionKey"),
         adminPassword = config.get("admin.password")
 
-    console.log(`Started database at ${databaseUrl}\n`)
+    console.log(`Started database at ${databaseUrl}`)
 
     try {
         console.log("Restoring system state")
@@ -45,7 +41,7 @@ const startAction: Parameters<typeof startCommand.action>[0] = async function ({
         console.log("System state restored")
     } catch (error) {
         console.log("error: system state restoration failed")
-        process.exit()
+        return
     }
 
     const [port] = await findFreePorts(1)
@@ -62,8 +58,7 @@ const startAction: Parameters<typeof startCommand.action>[0] = async function ({
         console.log(`Started server at http://localhost:${port}`)
     } catch (error) {
         console.log("error: server failed to start")
-        console.log(error)
-        process.exit()
+        return
     }
 }
 

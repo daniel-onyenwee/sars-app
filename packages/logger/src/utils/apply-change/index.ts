@@ -93,7 +93,7 @@ export async function applyChange(loggerId: string, dbClient: PrismaClient, cont
                 beforeImage: change.beforeImage,
                 afterImage: change.afterImage
             })
-            contributor.lastEntryAt = change.createdAt
+            contributor.lastEntryAt = new Date()
             oldContributor = contributor
             changeMade = true
         } catch (error: any) {

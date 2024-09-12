@@ -9,7 +9,7 @@ const startAction: Parameters<typeof startCommand.action>[0] = async function ({
 
     if (!config) {
         console.log("error: user configuration request failed")
-        return
+        process.exit(1)
     }
 
     const dbName = "sars-db"
@@ -21,7 +21,7 @@ const startAction: Parameters<typeof startCommand.action>[0] = async function ({
         pg = await setupDb(appDataDir, config.get("db.password"))
     } catch (error) {
         console.log("error: database failed to start")
-        return
+        process.exit(1)
     }
 
     let pgClient = pg.client(dbName)
@@ -41,7 +41,7 @@ const startAction: Parameters<typeof startCommand.action>[0] = async function ({
         console.log("System state restored")
     } catch (error) {
         console.log("error: system state restoration failed")
-        return
+        process.exit(1)
     }
 
     const [port] = await findFreePorts(1)
@@ -58,7 +58,7 @@ const startAction: Parameters<typeof startCommand.action>[0] = async function ({
         console.log(`Started server at http://localhost:${port}`)
     } catch (error) {
         console.log("error: server failed to start")
-        return
+        process.exit(1)
     }
 }
 

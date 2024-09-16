@@ -4,17 +4,81 @@
   import * as DropdownMenu from "@/components/ui/dropdown-menu";
   import * as Sheet from "@/components/ui/sheet";
   import { validate as validateUUID } from "uuid";
-  import { PanelLeft, Sun, Moon, LogOut } from "lucide-svelte";
+  import {
+    PanelLeft,
+    Settings,
+    Asterisk,
+    Sun,
+    Moon,
+    X,
+    Loader2,
+    RefreshCwIcon,
+    Info,
+    BookMarked,
+    FileJson2Icon,
+    FileInputIcon,
+    FileOutputIcon,
+  } from "lucide-svelte";
   import { Button } from "@/components/ui/button";
   import * as Breadcrumb from "@/components/ui/breadcrumb";
   import * as Drawer from "@/components/ui/drawer";
   import { resetMode, setMode } from "mode-watcher";
   import { mediaQuery } from "svelte-legos";
   import { capitalizeText } from "@/utils";
+  import { ChangePasswordDialog, LogFileDialog } from "@/components/dialog";
 
   export let data: LayoutData;
 
+  async function onExportLogFile() {
+    let { filePath } = await window.electron.dialog.save({
+      defaultPath: "data",
+      filters: [
+        {
+          extensions: ["log"],
+          name: "SARs log",
+        },
+      ],
+      title: "Export Log",
+      buttonLabel: "Save",
+    });
+
+    if (!filePath) return;
+
+    exportLogFileDialog.show(filePath);
+  }
+
+  async function onImportLogFile() {
+    let { filePaths } = await window.electron.dialog.open({
+      openType: "file",
+      title: "Import Log",
+      filters: [
+        {
+          extensions: ["log"],
+          name: "SARs log",
+        },
+      ],
+      buttonLabel: "Import",
+    });
+
+    if (filePaths.length <= 0) return;
+
+    importLogFileDialog.show(filePaths[0]);
+  }
+
+  async function setTheme(mode: "light" | "dark" | "system") {
+    await window.electron.theme(mode);
+
+    if (mode == "system") {
+      resetMode();
+    } else {
+      setMode(mode);
+    }
+  }
+
   let openBreadCrumbDropdownMenu = false;
+  let changePasswordDialog: ChangePasswordDialog;
+  let exportLogFileDialog: LogFileDialog;
+  let importLogFileDialog: LogFileDialog;
 
   const BREADCRUMB_ITEMS_TO_DISPLAY = 3;
   const isDesktop = mediaQuery("(min-width: 768px)");
@@ -166,23 +230,82 @@
             </Button>
           </DropdownMenu.Trigger>
           <DropdownMenu.Content align="end">
-            <DropdownMenu.Item on:click={() => setMode("light")}>
+            <DropdownMenu.Item on:click={async () => setTheme("light")}>
               Light
             </DropdownMenu.Item>
-            <DropdownMenu.Item on:click={() => setMode("dark")}>
+            <DropdownMenu.Item on:click={async () => setTheme("dark")}>
               Dark
             </DropdownMenu.Item>
-            <DropdownMenu.Item on:click={() => resetMode()}>
+            <DropdownMenu.Item on:click={async () => setTheme("system")}>
               System
             </DropdownMenu.Item>
           </DropdownMenu.Content>
         </DropdownMenu.Root>
-        <Button variant="outline" href="/app/logout" title="Logout" size="icon">
-          <LogOut
-            class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all"
-          />
-          <span class="sr-only">Logout</span>
-        </Button>
+        <DropdownMenu.Root>
+          <DropdownMenu.Trigger asChild let:builder>
+            <Button variant="outline" size="icon" builders={[builder]}>
+              <Settings
+                class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all"
+              />
+            </Button>
+          </DropdownMenu.Trigger>
+          <DropdownMenu.Content align="end" class="w-44">
+            <DropdownMenu.Label>Account</DropdownMenu.Label>
+            <DropdownMenu.Item on:click={() => changePasswordDialog.show()}>
+              <Asterisk class="mr-2 h-4 w-4" />
+              Change Password
+            </DropdownMenu.Item>
+            <DropdownMenu.Sub>
+              <DropdownMenu.SubTrigger>
+                <FileJson2Icon class="mr-2 h-4 w-4" />
+                Log File
+              </DropdownMenu.SubTrigger>
+              <DropdownMenu.SubContent>
+                <DropdownMenu.Item on:click={onImportLogFile}>
+                  <FileInputIcon class="mr-2 h-4 w-4" />
+                  Import
+                </DropdownMenu.Item>
+                <DropdownMenu.Item on:click={onExportLogFile}>
+                  <FileOutputIcon class="mr-2 h-4 w-4" />
+                  Export
+                </DropdownMenu.Item>
+              </DropdownMenu.SubContent>
+            </DropdownMenu.Sub>
+            <DropdownMenu.Separator />
+            <DropdownMenu.Label>Help</DropdownMenu.Label>
+            <DropdownMenu.Item
+              on:click={async () => await window.electron.showAboutPanel()}
+            >
+              <Info class="mr-2 h-4 w-4" />
+              About
+            </DropdownMenu.Item>
+            <DropdownMenu.Item
+              on:click={async () => await window.electron.showTutorial()}
+            >
+              <BookMarked class="mr-2 h-4 w-4" />
+              Tutorial
+            </DropdownMenu.Item>
+            <DropdownMenu.Separator />
+            <DropdownMenu.Item on:click={() => window.location.reload()}>
+              <Loader2 class="mr-2 h-4 w-4" />
+              Reload
+            </DropdownMenu.Item>
+            <DropdownMenu.Item
+              on:click={async () => await window.electron.restart()}
+            >
+              <RefreshCwIcon class="mr-2 h-4 w-4" />
+              Restart
+            </DropdownMenu.Item>
+            <DropdownMenu.Separator />
+            <DropdownMenu.Item
+              class="text-red-500 data-[highlighted]:bg-red-400 dark:data-[highlighted]:bg-destructive data-[highlighted]:text-white"
+              on:click={async () => await window.electron.quit()}
+            >
+              <X class="mr-2 h-4 w-4" />
+              Exit
+            </DropdownMenu.Item>
+          </DropdownMenu.Content>
+        </DropdownMenu.Root>
       </div>
     </header>
     <section class="p-4 sm:px-6 sm:py-0">
@@ -190,3 +313,7 @@
     </section>
   </div>
 </main>
+
+<ChangePasswordDialog bind:this={changePasswordDialog} />
+<LogFileDialog action="EXPORT" bind:this={exportLogFileDialog} />
+<LogFileDialog action="IMPORT" bind:this={importLogFileDialog} />

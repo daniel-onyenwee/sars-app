@@ -92,7 +92,7 @@ export default class Logger {
         })
     }
 
-    async output(fileName: string = "data", path: string = dirname(fileURLToPath(import.meta.url))) {
+    async output(path: string = join(dirname(fileURLToPath(import.meta.url)), "data.log")) {
         if (!this.#isInitialize) {
             await this.#initialize()
         }
@@ -109,10 +109,10 @@ export default class Logger {
 
         let data = JSON.stringify(entries, null, 2)
 
-        if (!existsSync(path)) {
-            await mkdir(path, { recursive: true })
+        if (!existsSync(dirname(path))) {
+            await mkdir(dirname(path), { recursive: true })
         }
 
-        await writeFile(join(path, `${fileName}.log`), data, { encoding: "utf8" })
+        await writeFile(path, data, { encoding: "utf8" })
     }
 }

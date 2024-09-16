@@ -203,6 +203,10 @@
 
     await initializeData();
   });
+
+  $: attendanceRegisterLecturersUsername = attendanceRegisterLecturers.map(
+    ({ username }) => username
+  );
 </script>
 
 <div class="flex items-center gap-1 justify-between mb-3">
@@ -425,6 +429,7 @@
 <AttendanceRegisterLecturerRecordDialog
   accessToken={data.session.accessToken}
   attendanceRegisterId={data.attendanceRegister.id}
+  bind:excludedLecturersUsername={attendanceRegisterLecturersUsername}
   on:sessionError={() => sessionAlertDialog.show()}
   on:successful={async () => await initializeData()}
   bind:this={attendanceRegisterLecturerRecordDialog}

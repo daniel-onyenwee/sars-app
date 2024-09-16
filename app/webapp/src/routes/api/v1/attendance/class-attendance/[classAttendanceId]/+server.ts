@@ -1,7 +1,8 @@
 import { json } from "@/utils"
-import { prismaClient } from "@/server"
+import { mergeCourseClashQuery, prismaClient } from "@/server"
 import type { RequestHandler } from "./$types"
 import { differenceInHours } from "date-fns"
+import { Prisma } from "@prisma/client"
 
 interface ClassAttendanceIDRequestBody {
     attendanceRegisterId: string
@@ -394,6 +395,35 @@ export const PATCH: RequestHandler = async ({ params, request }) => {
         },
         ...otherCourseDate
     } = course
+
+    // Update the course clash attendances
+    let courseClashAttendanceUpdateQuery = prismaClient.courseClashAttendance.updateMany({
+        where: {
+            classAttendee: {
+                classAttendanceId: classAttendanceId
+            }
+        },
+        data: {
+            date: updateData.date,
+            startTime: updateData.startTime,
+            endTime: updateData.endTime,
+        }
+    })
+
+    // Delete the class attendee depending on the course clash attendances
+    let dependentClassAttendeeDeleteQuery = prismaClient.classAttendee.deleteMany({
+        where: {
+            classAttendanceId: classAttendanceId,
+            courseClashAttendanceDependingOnId: {
+                not: null
+            }
+        }
+    })
+
+    await prismaClient.$transaction([courseClashAttendanceUpdateQuery, dependentClassAttendeeDeleteQuery])
+
+    // Raw sql to handle merging of course crashes to their respective class attendances 
+    await prismaClient.$executeRaw(Prisma.sql([mergeCourseClashQuery]))
 
     return json.success({
         ok: true,

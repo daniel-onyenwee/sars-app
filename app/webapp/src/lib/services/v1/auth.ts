@@ -7,7 +7,9 @@ import {
 import type { AuthModel, AuthenticatedServiceHandle, ServiceHandle } from "./types.js"
 
 export interface LoginServiceBody {
-    password: string
+    password: string,
+    platform?: "Electron" | "Browser",
+    systemPassword?: string
 }
 
 export const login: ServiceHandle<LoginServiceBody, AuthModel> = async ({ fetchApi, ...data }) => {
@@ -43,7 +45,7 @@ export const login: ServiceHandle<LoginServiceBody, AuthModel> = async ({ fetchA
     return responseBody
 }
 
-export const resetToken: AuthenticatedServiceHandle<null, AuthModel> = async ({ fetchApi, ...data }) => {
+export const resetToken: AuthenticatedServiceHandle<{ platform?: "Electron" | "Browser", systemPassword?: string }, AuthModel> = async ({ fetchApi, ...data }) => {
     fetchApi = fetchApi || fetch
 
     let response = await fetchApi(`/api/${API_VERSION}/auth/reset-token`, {

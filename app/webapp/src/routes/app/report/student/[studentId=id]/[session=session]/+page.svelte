@@ -9,7 +9,7 @@
   import * as DropdownMenu from "@/components/ui/dropdown-menu";
   import {
     generateStudentReport,
-    generateStudentReportDownloadLink,
+    generateStudentReportBinary,
   } from "@/services";
   import type {
     StudentReportFilterByOption,
@@ -21,24 +21,31 @@
   import { onMount } from "svelte";
   import SortWorker from "@/web-workers/sort?worker";
   import { SortByMenu, FilterByMenu } from "@/components/menu";
-  import { formatNumber, sleep } from "@/utils";
-  import { formatDate } from "date-fns";
+  import { formatNumber, showToast, sleep } from "@/utils";
 
   export let data: PageData;
 
-  function onDownload() {
-    let link = generateStudentReportDownloadLink({
+  async function onDownload() {
+    isDownloading = true;
+    let fileData = await generateStudentReportBinary({
       filter: filterBy,
       studentId: data.student.id,
       sort: sortBy,
       session: encodeURIComponent(data.academicSession),
     });
 
-    let linkElem = document.createElement("a");
-    linkElem.target = "_blank";
-    linkElem.rel = "noopener noreferrer";
-    linkElem.href = link;
-    linkElem.click();
+    let filename = `${data.student.regno}_${data.academicSession}.xlsx`;
+
+    try {
+      await window.electron.download(
+        filename.replace(/\//g, "-"),
+        await fileData.arrayBuffer()
+      );
+    } catch (error) {
+      showToast("ERROR", "Request failed", "Student report download failed");
+    }
+
+    isDownloading = false;
   }
 
   function onSortBy(by: string) {
@@ -175,6 +182,7 @@
   let sortWorker: Worker;
   let sessionAlertDialog: SessionAlertDialog;
   let studentReportDialog: StudentReportDialog;
+  let isDownloading: boolean = false;
 
   onMount(async () => {
     sortWorker = new SortWorker();
@@ -210,10 +218,13 @@
 </Card.Root>
 
 <div class="flex items-center gap-1 justify-between mb-3">
-  <Button class="h-9 gap-1.5" on:click={onDownload}>
-    <Download class="h-3.5 w-3.5" />
+  <Button disabled={isDownloading} class="h-9 gap-1.5" on:click={onDownload}>
+    <LoaderCircle
+      class="h-3.5 w-3.5 animate-spin {!isDownloading && 'hidden'}"
+    />
+    <Download class="h-3.5 w-3.5 {isDownloading && 'hidden'}" />
     <span class="sr-only sm:not-sr-only sm:whitespace-nowrap">
-      Download Report
+      {!isDownloading ? "Download Report" : "Downloading"}
     </span>
   </Button>
   <div>

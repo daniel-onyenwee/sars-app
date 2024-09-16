@@ -7,10 +7,7 @@
   import { Badge } from "@/components/ui/badge";
   import * as Table from "@/components/ui/table";
   import * as DropdownMenu from "@/components/ui/dropdown-menu";
-  import {
-    generateCourseReport,
-    generateCourseReportDownloadLink,
-  } from "@/services";
+  import { generateCourseReport, generateCourseReportBinary } from "@/services";
   import type {
     CourseReportFilterByOption,
     CourseReportSortByOption,
@@ -21,24 +18,32 @@
   import { onMount } from "svelte";
   import SortWorker from "@/web-workers/sort?worker";
   import { SortByMenu, FilterByMenu } from "@/components/menu";
-  import { formatNumber, sleep } from "@/utils";
+  import { formatNumber, showToast, sleep } from "@/utils";
   import { formatDate } from "date-fns";
 
   export let data: PageData;
 
-  function onDownload() {
-    let link = generateCourseReportDownloadLink({
+  async function onDownload() {
+    isDownloading = true;
+    let fileData = await generateCourseReportBinary({
       filter: filterBy,
       courseId: data.course.id,
       sort: sortBy,
       session: encodeURIComponent(data.academicSession),
     });
 
-    let linkElem = document.createElement("a");
-    linkElem.target = "_blank";
-    linkElem.rel = "noopener noreferrer";
-    linkElem.href = link;
-    linkElem.click();
+    let filename = `${data.course.code}_${data.academicSession}.xlsx`;
+
+    try {
+      await window.electron.download(
+        filename.replace(/\//g, "-"),
+        await fileData.arrayBuffer()
+      );
+    } catch (error) {
+      showToast("ERROR", "Request failed", "Course report download failed");
+    }
+
+    isDownloading = false;
   }
 
   function onSortBy(by: string) {
@@ -158,6 +163,7 @@
   let sortWorker: Worker;
   let sessionAlertDialog: SessionAlertDialog;
   let courseReportDialog: CourseReportDialog;
+  let isDownloading: boolean = false;
 
   onMount(async () => {
     sortWorker = new SortWorker();
@@ -232,10 +238,13 @@
 </div>
 
 <div class="flex items-center gap-1 justify-between mb-3">
-  <Button class="h-9 gap-1.5" on:click={onDownload}>
-    <Download class="h-3.5 w-3.5" />
+  <Button disabled={isDownloading} class="h-9 gap-1.5" on:click={onDownload}>
+    <LoaderCircle
+      class="h-3.5 w-3.5 animate-spin {!isDownloading && 'hidden'}"
+    />
+    <Download class="h-3.5 w-3.5 {isDownloading && 'hidden'}" />
     <span class="sr-only sm:not-sr-only sm:whitespace-nowrap">
-      Download Report
+      {!isDownloading ? "Download Report" : "Downloading"}
     </span>
   </Button>
   <div>

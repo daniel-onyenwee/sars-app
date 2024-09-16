@@ -17,6 +17,7 @@
 
   export let accessToken: string;
   export let attendanceRegisterId: string;
+  export let excludedLecturersUsername: string[] = [];
 
   function show(mode: "ADD", data: undefined): void;
   function show(mode: "VIEW", data: AttendanceRegisterLecturerModel): void;
@@ -254,36 +255,38 @@
                     <Command.Empty>No lecturer found.</Command.Empty>
                     <Command.Group class="overflow-auto max-h-52">
                       {#each lecturers as lecturer}
-                        <Command.Item
-                          onSelect={() => {
-                            attendanceRegisterLecturerData.lecturerId =
-                              lecturer.id;
-                            onLecturerSelected(
-                              lecturer.name,
-                              lecturer.username
-                            );
-                            closeAndFocusTrigger(ids.trigger);
-                          }}
-                          value={`${lecturer.username} ${lecturer.name}`}
-                        >
-                          <Check
-                            class={cn(
-                              "mr-2 h-4 w-4",
-                              lecturer.username !==
-                                attendanceRegisterLecturerData.username &&
-                                "text-transparent"
-                            )}
-                          />
-                          <div
-                            style="width: calc(100% - 20px)"
-                            class="grid gap-1"
+                        {#if !excludedLecturersUsername.includes(lecturer.username)}
+                          <Command.Item
+                            onSelect={() => {
+                              attendanceRegisterLecturerData.lecturerId =
+                                lecturer.id;
+                              onLecturerSelected(
+                                lecturer.name,
+                                lecturer.username
+                              );
+                              closeAndFocusTrigger(ids.trigger);
+                            }}
+                            value={`${lecturer.username} ${lecturer.name}`}
                           >
-                            <span>{lecturer.name}</span>
-                            <span class="text-sm text-muted-foreground">
-                              {lecturer.username}
-                            </span>
-                          </div>
-                        </Command.Item>
+                            <Check
+                              class={cn(
+                                "mr-2 h-4 w-4",
+                                lecturer.username !==
+                                  attendanceRegisterLecturerData.username &&
+                                  "text-transparent"
+                              )}
+                            />
+                            <div
+                              style="width: calc(100% - 20px)"
+                              class="grid gap-1"
+                            >
+                              <span>{lecturer.name}</span>
+                              <span class="text-sm text-muted-foreground">
+                                {lecturer.username}
+                              </span>
+                            </div>
+                          </Command.Item>
+                        {/if}
                       {/each}
                     </Command.Group>
                   {:else}

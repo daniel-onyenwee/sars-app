@@ -2,8 +2,11 @@
   import "../app.pcss";
   import { Toaster } from "$lib/components/ui/sonner";
   import { ModeWatcher } from "mode-watcher";
+  import { UnsupportedAlertDialog } from "@/components/dialog";
 </script>
 
 <ModeWatcher />
 <Toaster />
 <slot></slot>
+
+<UnsupportedAlertDialog />

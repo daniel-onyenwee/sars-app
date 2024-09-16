@@ -226,7 +226,7 @@
 
     if (
       classAttendanceData.endTime &&
-      classAttendanceData.endTime.getUTCHours() == 0
+      toDate(classAttendanceData.endTime).getUTCHours() == 0
     ) {
       errorMessage.endTime = "Unsupported time";
       requestOngoing = false;

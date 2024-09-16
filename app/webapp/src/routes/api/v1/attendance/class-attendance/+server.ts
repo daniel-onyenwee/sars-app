@@ -1,7 +1,7 @@
 import { getCurrentSession, json } from "@/utils"
 import type { RequestHandler } from "./$types"
 import { Prisma, type $Enums } from "@prisma/client"
-import { differenceInHours, subMonths } from "date-fns"
+import { differenceInHours } from "date-fns"
 import { prismaClient, mergeCourseClashQuery } from "@/server"
 
 interface ClassAttendanceRequestBody {
@@ -555,16 +555,6 @@ export const POST: RequestHandler = async ({ request }) => {
             data: null
         })
     }
-
-    // Delete all the crash course data that are 1 month ago
-    await prismaClient.courseClashAttendance.deleteMany({
-        where: {
-            courseId: attendanceRegister.courseId,
-            date: {
-                lte: subMonths(body.date, 1)
-            }
-        }
-    })
 
     // Create the class attendance
     const classAttendance = await prismaClient.classAttendance.create({

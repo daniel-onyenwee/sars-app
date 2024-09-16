@@ -132,7 +132,6 @@
   }
 
   async function onSearch() {
-    console.log(filterBy);
     await initializeData();
   }
 
@@ -193,6 +192,8 @@
 
     await initializeData();
   });
+
+  $: classAttendeesRegno = classAttendees.map(({ regno }) => regno);
 </script>
 
 <div class="flex items-center gap-1 justify-between mb-3">
@@ -252,7 +253,7 @@
           <Table.Head class="min-w-72 max-w-72 truncate">Name</Table.Head>
           <Table.Head class="min-w-48 max-w-48 truncate">Regno</Table.Head>
           <Table.Head class="min-w-32 max-w-32 truncate">
-            Course crash
+            Course clash
           </Table.Head>
           <Table.Head class="w-[25px]">
             <div class="w-4"></div>
@@ -384,6 +385,8 @@
 <ClassAttendeeDialog
   accessToken={data.session.accessToken}
   classAttendanceId={data.classAttendance.id}
+  bind:excludedStudentsRegno={classAttendeesRegno}
+  bind:excludedCourseCode={data.classAttendance.courseCode}
   on:sessionError={() => sessionAlertDialog.show()}
   on:successful={async () => await initializeData()}
   bind:this={classAttendeeDialog}

@@ -46,10 +46,6 @@ export async function applyChange(loggerId: string, dbClient: PrismaClient, cont
     let changeMade = false
 
     for (let change of changes) {
-        if (change.loggerId == loggerId) {
-            continue
-        }
-
         let applierName = tableModelName(change.table as Tables)
 
         if (!applierName || !(applierName in Appliers)) {

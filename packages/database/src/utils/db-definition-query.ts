@@ -130,6 +130,7 @@ CREATE TABLE IF NOT EXISTS "class_attendees" (
     "id" TEXT NOT NULL,
     "class_attendance_id" TEXT NOT NULL,
     "attendance_register_student_id" TEXT NOT NULL,
+    "course_clash_attendance_depending_on_id" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
     "metadata" JSONB NOT NULL DEFAULT '{}',
@@ -335,6 +336,19 @@ BEGIN
     ) THEN
         ALTER TABLE "class_attendees" ADD CONSTRAINT "class_attendees_attendance_register_student_id_fkey" 
         FOREIGN KEY ("attendance_register_student_id") REFERENCES "attendance_register_students"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+    END IF;
+END $$;
+
+-- Check and add constraint for class_attendees.course_clash_attendance_depending_on_id
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.table_constraints 
+        WHERE constraint_name = 'class_attendees_course_clash_attendance_depending_on_id_fkey' 
+        AND table_name = 'class_attendees'
+    ) THEN
+        ALTER TABLE "class_attendees" ADD CONSTRAINT "class_attendees_course_clash_attendance_depending_on_id_fkey" 
+        FOREIGN KEY ("course_clash_attendance_depending_on_id") REFERENCES "course_clash_attendances"("id") ON DELETE CASCADE ON UPDATE CASCADE;
     END IF;
 END $$;
 

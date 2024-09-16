@@ -32,6 +32,14 @@ export const generateStudentReport: AuthenticatedServiceHandle<Partial<GenerateS
         return responseBody
     }
 
-export const generateStudentReportDownloadLink = ({ studentId, session, count, page, sort, filter }: Partial<GenerateStudentReportServiceBody> & { studentId: string, session: string }): string => {
-    return urlSortAndFilterAttacher<typeof filter, typeof sort>({ path: `/api/${API_VERSION}/report/student/${studentId}/${session}/download`, filter, sort, count, page }).toString()
+export const generateStudentReportBinary = async ({ fetchApi, studentId, session, count, page, sort, filter }: Partial<GenerateStudentReportServiceBody> & { fetchApi?: typeof fetch, studentId: string, session: string }): Promise<Blob> => {
+    let url = urlSortAndFilterAttacher<typeof filter, typeof sort>({ path: `/api/${API_VERSION}/report/student/${studentId}/${session}/download`, filter, sort, count, page })
+
+    fetchApi = fetchApi || fetch
+
+    let response = await fetchApi(url, {
+        method: "GET",
+    })
+
+    return await response.blob()
 }

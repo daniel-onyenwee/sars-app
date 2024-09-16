@@ -80,7 +80,7 @@ export async function setupConfig(appDataDir: string) {
 
     const config = new Conf({
         projectVersion: "1.0.0",
-        cwd: join(appDataDir, "engine"),
+        cwd: join(appDataDir, "Engine"),
         schema
     })
 

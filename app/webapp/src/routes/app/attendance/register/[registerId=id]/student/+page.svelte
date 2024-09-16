@@ -221,6 +221,10 @@
 
     await initializeData();
   });
+
+  $: attendanceRegisterStudentsRegno = attendanceRegisterStudents.map(
+    ({ regno }) => regno
+  );
 </script>
 
 <div class="flex items-center gap-1 justify-between mb-3">
@@ -450,6 +454,7 @@
 <AttendanceRegisterStudentRecordDialog
   accessToken={data.session.accessToken}
   attendanceRegisterId={data.attendanceRegister.id}
+  bind:excludedStudentsRegno={attendanceRegisterStudentsRegno}
   on:sessionError={() => sessionAlertDialog.show()}
   on:successful={async () => await initializeData()}
   bind:this={attendanceRegisterStudentRecordDialog}

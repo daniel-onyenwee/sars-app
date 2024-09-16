@@ -24,13 +24,31 @@ export const GET: RequestHandler = async ({ params, url }) => {
     })
 
     if (!studentCount) {
-        return json.fail({
-            ok: false,
-            error: {
-                message: "Student not found",
-                code: 3023
-            },
-            data: null
+        let fileName = `untitled_${session}_Report`
+
+        let excelFileColumns = [
+            { header: "Course title", key: "courseTitle", width: 35 },
+            { header: "Course code", key: "courseCode", width: 15 },
+            { header: "Semester", key: "semester", width: 15 },
+            { header: "Total classes", key: "totalClasses", width: 15 },
+            { header: "Classes attended", key: "classesAttended", width: 20 },
+            { header: "Classes attended percentage", width: 30, key: "classesAttendedPercentage" }
+        ]
+
+        let fileData = createExcelFile({
+            title: fileName,
+            created: new Date(),
+            firstHeader: fileName,
+            creator: "SAR system",
+            columns: excelFileColumns
+        }, [])
+
+        return new Response(fileData, {
+            status: 200,
+            headers: {
+                "Content-Type": "application/vnd.ms-excel",
+                "Content-disposition": `attachment; filename=${fileName}.xlsx`
+            }
         })
     }
 
@@ -101,7 +119,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
         { header: "Classes attended percentage", width: 30, key: "classesAttendedPercentage" }
     ]
 
-    let fileData = await createExcelFile({
+    let fileData = createExcelFile({
         title: fileName,
         created: new Date(),
         firstHeader: fileName,

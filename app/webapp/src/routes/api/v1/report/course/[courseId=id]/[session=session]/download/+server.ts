@@ -1,4 +1,4 @@
-import { generateCourseReport, json } from "@/utils"
+import { generateCourseReport } from "@/utils"
 import type { RequestHandler } from "./$types"
 import { format } from "date-fns"
 import { prismaClient, createExcelFile } from "@/server"
@@ -53,13 +53,28 @@ export const GET: RequestHandler = async ({ params, url }) => {
     })
 
     if (!courseCount) {
-        return json.fail({
-            ok: false,
-            error: {
-                message: "Course not found",
-                code: 3015
-            },
-            data: null
+        let fileName = `untitled_${session}_Report`
+
+        let fileData = createExcelFile({
+            title: fileName,
+            created: new Date(),
+            firstHeader: fileName,
+            creator: "SAR system",
+            columns: [
+                { header: "Name", key: "name", width: 35 },
+                { header: "Regno", key: "regno", width: 20 },
+                { header: "Decision", key: "decision", width: 10 },
+                { header: "Classes attended", key: "classesAttended", width: 20 },
+                { header: "Classes attended percentage", width: 30, key: "classesAttendedPercentage" }
+            ]
+        }, [])
+
+        return new Response(fileData, {
+            status: 200,
+            headers: {
+                "Content-Type": "application/vnd.ms-excel",
+                "Content-disposition": `attachment; filename=${fileName}.xlsx`
+            }
         })
     }
 
@@ -123,7 +138,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
 
     let fileName = `${courseCount.code}_${session}_Report`
 
-    let fileData = await createExcelFile({
+    let fileData = createExcelFile({
         title: fileName,
         created: new Date(),
         firstHeader: fileName,

@@ -24,7 +24,20 @@
     }
 
     try {
-      let { error } = await login(userDetail as Required<UserDetail>);
+      let platformSystem = window.electron
+        ? {
+            platform: "Electron",
+            systemPassword:
+              await window.electron.engine.config("admin.password"),
+          }
+        : {
+            platform: "Browser",
+          };
+
+      let { error } = await login({
+        ...platformSystem,
+        password: userDetail.password,
+      } as any);
 
       if (error) {
         if (error.code == 2001) {

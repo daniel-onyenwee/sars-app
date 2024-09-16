@@ -1,4 +1,7 @@
 export { default as SessionAlertDialog } from "./session-alert.svelte"
+export { default as UnsupportedAlertDialog } from "./unsupported-alert.svelte"
+export { default as ChangePasswordDialog } from "./change-password.svelte"
+export { default as LogFileDialog } from "./log-file.svelte"
 export { default as DeleteRecordDialog } from "./delete-record.svelte"
 export { default as FacultyRecordDialog } from "./faculty-record.svelte"
 export { default as DepartmentRecordDialog } from "./department-record.svelte"

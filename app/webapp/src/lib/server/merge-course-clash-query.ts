@@ -47,21 +47,18 @@ SET
   student_id = course_clash_attendances_record.STUDENT_ID RETURNING id INTO attendance_register_student;
 INSERT INTO public.class_attendees(
   id, class_attendance_id, attendance_register_student_id, 
-  updated_at
+  updated_at, course_clash_attendance_depending_on_id
 ) 
 VALUES 
   (
     gen_random_uuid():: TEXT, 
     course_clash_attendances_record.CLASS_ATTENDANCE_ID, 
     attendance_register_student.id, 
-    now()
+    now(),
+    course_clash_attendances_record.COURSE_CLASH_ATTENDANCE_ID
   ) ON CONFLICT(
     class_attendance_id, attendance_register_student_id
   ) DO NOTHING;
-DELETE FROM 
-  public.COURSE_CLASH_ATTENDANCES 
-WHERE 
-  id = course_clash_attendances_record.COURSE_CLASH_ATTENDANCE_ID;
 END LOOP;
 END $$
 `

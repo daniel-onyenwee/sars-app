@@ -22,7 +22,7 @@ interface ServiceError {
 }
 
 export interface ServiceData<T> {
-    ok: false
+    ok: boolean
     error: ServiceError | null
     data: T | null
 }

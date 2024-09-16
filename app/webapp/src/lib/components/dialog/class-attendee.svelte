@@ -19,6 +19,8 @@
 
   export let accessToken: string;
   export let classAttendanceId: string;
+  export let excludedStudentsRegno: string[] = [];
+  export let excludedCourseCode: string = String();
 
   function show(mode: "ADD", data: undefined): void;
   function show(mode: "VIEW", data: ClassAttendeeModel): void;
@@ -253,31 +255,33 @@
                     <Command.Empty>No student found.</Command.Empty>
                     <Command.Group class="overflow-auto max-h-52">
                       {#each students as student}
-                        <Command.Item
-                          onSelect={() => {
-                            classAttendeeData.studentId = student.id;
-                            onStudentSelected(student.name, student.regno);
-                            closeAndFocusTrigger(ids.trigger);
-                          }}
-                          value={`${student.regno} ${student.name}`}
-                        >
-                          <Check
-                            class={cn(
-                              "mr-2 h-4 w-4",
-                              student.regno !== classAttendeeData.regno &&
-                                "text-transparent"
-                            )}
-                          />
-                          <div
-                            style="width: calc(100% - 20px)"
-                            class="grid gap-1"
+                        {#if !excludedStudentsRegno.includes(student.regno)}
+                          <Command.Item
+                            onSelect={() => {
+                              classAttendeeData.studentId = student.id;
+                              onStudentSelected(student.name, student.regno);
+                              closeAndFocusTrigger(ids.trigger);
+                            }}
+                            value={`${student.regno} ${student.name}`}
                           >
-                            <span>{student.name}</span>
-                            <span class="text-sm text-muted-foreground">
-                              {student.regno}
-                            </span>
-                          </div>
-                        </Command.Item>
+                            <Check
+                              class={cn(
+                                "mr-2 h-4 w-4",
+                                student.regno !== classAttendeeData.regno &&
+                                  "text-transparent"
+                              )}
+                            />
+                            <div
+                              style="width: calc(100% - 20px)"
+                              class="grid gap-1"
+                            >
+                              <span>{student.name}</span>
+                              <span class="text-sm text-muted-foreground">
+                                {student.regno}
+                              </span>
+                            </div>
+                          </Command.Item>
+                        {/if}
                       {/each}
                     </Command.Group>
                   {:else}
@@ -331,32 +335,34 @@
                     <Command.Empty>No course found.</Command.Empty>
                     <Command.Group class="overflow-auto max-h-52">
                       {#each courses as course}
-                        <Command.Item
-                          onSelect={() => {
-                            classAttendeeData.courseClashId = course.id;
-                            onCrashCourseSelected(course.title, course.code);
-                            closeAndFocusTrigger(ids.trigger);
-                          }}
-                          value={`${course.code} ${course.title}`}
-                        >
-                          <Check
-                            class={cn(
-                              "mr-2 h-4 w-4",
-                              course.code !==
-                                classAttendeeData.courseClashCode &&
-                                "text-transparent"
-                            )}
-                          />
-                          <div
-                            style="width: calc(100% - 20px)"
-                            class="grid gap-1"
+                        {#if excludedCourseCode != course.code}
+                          <Command.Item
+                            onSelect={() => {
+                              classAttendeeData.courseClashId = course.id;
+                              onCrashCourseSelected(course.title, course.code);
+                              closeAndFocusTrigger(ids.trigger);
+                            }}
+                            value={`${course.code} ${course.title}`}
                           >
-                            <span>{course.title}</span>
-                            <span class="text-sm text-muted-foreground">
-                              {course.code}
-                            </span>
-                          </div>
-                        </Command.Item>
+                            <Check
+                              class={cn(
+                                "mr-2 h-4 w-4",
+                                course.code !==
+                                  classAttendeeData.courseClashCode &&
+                                  "text-transparent"
+                              )}
+                            />
+                            <div
+                              style="width: calc(100% - 20px)"
+                              class="grid gap-1"
+                            >
+                              <span>{course.title}</span>
+                              <span class="text-sm text-muted-foreground">
+                                {course.code}
+                              </span>
+                            </div>
+                          </Command.Item>
+                        {/if}
                       {/each}
                     </Command.Group>
                   {:else}

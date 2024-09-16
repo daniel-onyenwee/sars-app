@@ -1,6 +1,7 @@
 import Conf from "conf"
 import { randomBytes } from "node:crypto"
-import { machineIdSync } from "node-machine-id"
+import pkg from "node-machine-id"
+const { machineIdSync } = pkg
 import { generatePassword } from "./generate-password.js"
 import { join } from "node:path"
 import { appDataDirParse } from "./app-data-dir-parse.js"
